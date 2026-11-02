@@ -1,103 +1,104 @@
 package modelo.entidades;
-
+ 
+import excepciones.CampoVacioException;
+import excepciones.FechaInvalidaException;
+import excepciones.PrioridadInvalidaException;
 import java.time.LocalDate;
 
-public class Tarea implements Comparable<Tarea> {
-    private int id;
+
+public class Tarea {
+    public static final int PRIORIDAD_MIN = 1;
+    public static final int PRIORIDAD_MAX = 5;
+    
+    //atributos
+    private final int id;
     private String nombre;
     private String descripcion;
     private int prioridad;
     private LocalDate fechaLimite;
     private String categoria;
     private boolean completada;
+    
+    //constructor
+    public Tarea(int id, String nombre, String descripcion, int prioridad, LocalDate fechaLimite, String categoria)
 
-    public Tarea() {
-    }
-
-    // Constructor 
-    public Tarea(int id, String nombre, String descripcion, int prioridad, LocalDate fechaLimite, String categoria) {
+        //excepciones declaradas en el constructor
+        throws PrioridadInvalidaException, FechaInvalidaException, CampoVacioException {
         this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.prioridad = prioridad;
-        this.fechaLimite = fechaLimite;
-        this.categoria = categoria;
+        setNombre(nombre);
+        setDescripcion(descripcion);
+        setPrioridad(prioridad);
+        setFechaLimite(fechaLimite);
+        setCategoria(categoria);
         this.completada = false;
     }
+    
 
-    // Constructor 
-    public Tarea(String nombre, int prioridad) {
-        this.nombre = nombre;
+    //Consultar estados, getters
+    public int getId() { return id; }
+
+    public String getNombre() { return nombre; }
+
+    public String getDescripcion() { return descripcion; }
+
+    public int getPrioridad() { return prioridad; }
+
+    public LocalDate getFechaLimite() { return fechaLimite; }
+
+    public String getCategoria() { return categoria; }
+
+    public boolean isCompletada() { return completada; }
+    
+
+    //Cambiar datos, setters ---------------------------------------------
+
+    public void setNombre(String nombre)  throws CampoVacioException {
+        //manejo de exepcion, campo vacio
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new CampoVacioException("nombre");
+        }
+        this.nombre = nombre.trim();
+    }
+
+    public void setDescripcion(String descripcion) { 
+        this.descripcion = (descripcion == null) ? "" : descripcion.trim();
+    }
+
+    public void setCategoria(String categoria) throws CampoVacioException {
+
+        //manejo de exepcion, campo vacio
+        if (categoria == null || categoria.trim().isEmpty()) {
+            throw new CampoVacioException("categoria");
+        }
+        this.categoria = categoria.trim(); 
+    }
+
+    public void setCompletada(boolean completada) { this.completada = completada; }
+ 
+    public void setPrioridad(int prioridad) throws PrioridadInvalidaException {
+
+        //manejo de exepcion, Prioridad en un rango valido
+        if (prioridad < PRIORIDAD_MIN || prioridad > PRIORIDAD_MAX) {
+            throw new PrioridadInvalidaException("La prioridad debe estar en un rango permitivo");
+        }
         this.prioridad = prioridad;
-        this.completada = false;
     }
+ 
+    public void setFechaLimite(LocalDate fechaLimite) throws FechaInvalidaException {
 
-    // Getters y Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public int getPrioridad() {
-        return prioridad;
-    }
-
-    public void setPrioridad(int prioridad) {
-        this.prioridad = prioridad;
-    }
-
-    public LocalDate getFechaLimite() {
-        return fechaLimite;
-    }
-
-    public void setFechaLimite(LocalDate fechaLimite) {
+        //manejo de exepcion, fecha nula
+        if (fechaLimite == null) {
+            throw new FechaInvalidaException("La fecha limite no puede ser nula.");
+        }
         this.fechaLimite = fechaLimite;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public boolean isCompletada() {
-        return completada;
-    }
-
-    public void setCompletada(boolean completada) {
-        this.completada = completada;
-    }
-
-    @Override
-    public int compareTo(Tarea otra) {
-        if (otra == null || otra.getNombre() == null) return 1;
-        if (this.nombre == null) return -1;
-        return this.nombre.compareToIgnoreCase(otra.getNombre());
-    }
-
+    //cambio de string temporal para pruebas en consola---- BORRRAR DESPUES
     @Override
     public String toString() {
-        return nombre + " | Prioridad: " + prioridad + " | Estado: " + (completada ? "Completada" : "Pendiente");
+        return "[" + id + "] " + nombre + " | Prioridad: " + prioridad
+                + " | Vence: " + fechaLimite
+                + " | Categoria: " + (categoria == null ? "-" : categoria)
+                + " | " + (completada ? "Completada" : "Pendiente");
     }
 }

@@ -3,43 +3,76 @@ package modelo.entidades;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Nodo de un ARBOL GENERAL (n-ario): cada categoria puede tener
- * cualquier cantidad de subcategorias.
- *
- *   Categorias
- *    ├─ Trabajo
- *    │   └─ Proyecto A
- *    │       └─ Documentacion
- *    └─ Personal
- *
- * Las tareas NO se guardan aqui: la clase Tarea ya guarda el nombre de su
- * categoria (atributo categoria), asi que el arbol las cuenta comparando nombres.
- */
+import excepciones.CampoVacioException;
+
 public class NodoCategoria {
 
-    private final String nombre;
-    private final NodoCategoria padre;                     
+    //atributos
+    private String nombre; 
+    private NodoCategoria padre; 
     private final ArrayList<NodoCategoria> hijos = new ArrayList<>();
+    
+    //El nodo guarda referencias a sus tareas
+    private final ArrayList<Tarea> tareas = new ArrayList<>();
 
-    public NodoCategoria(String nombre, NodoCategoria padre) {
-        this.nombre = nombre;
+    //contructor
+    public NodoCategoria(String nombre, NodoCategoria padre) throws CampoVacioException {
+        //usa la validacion para insertar el nombre
+        setNombre(nombre);
         this.padre = padre;
     }
 
-    public void agregarHijo(NodoCategoria hijo) { hijos.add(hijo); }
-    public void eliminarHijo(NodoCategoria hijo) { hijos.remove(hijo); }
+    // validacion de entrada con excepcion propia, nombre no puede estar vacio o lleno de espacios
+    public void setNombre(String nombre) throws CampoVacioException {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new CampoVacioException("El nombre de la categoria");
+        }
+        this.nombre = nombre.trim();
+    }
+    
+    public void setPadre(NodoCategoria padre) {
+        this.padre = padre;
+    }
 
-    public boolean esRaiz() { return padre == null; }
-    public boolean esHoja() { return hijos.isEmpty(); }
 
     public String getNombre() { return nombre; }
     public NodoCategoria getPadre() { return padre; }
     public List<NodoCategoria> getHijos() { return hijos; }
+    public List<Tarea> getTareas() { return tareas; } 
 
-    // Una tarea pertenece a este nodo si su categoria tiene el mismo nombre
+
+    //Elementos de la lista hijo
+    public void agregarHijo(NodoCategoria hijo) { hijos.add(hijo); }
+
+    public void eliminarHijo(NodoCategoria hijo) { hijos.remove(hijo); }
+    
+    //Obtener estados
+    public boolean esRaiz() { return padre == null; }
+
+    public boolean esHoja() { return hijos.isEmpty(); }
+
+    // Elementos de listado tareas
+    public void agregarTarea(Tarea tarea) {
+        if (tarea != null && !tareas.contains(tarea)) tareas.add(tarea);
+    }
+    
+    public void eliminarTarea(Tarea tarea) {
+        tareas.remove(tarea);
+    }
+
+
+    // Construccion de ruta completa como identificador
+    public String obtenerRutaCompleta() {
+        //retorna raiz
+        if (padre == null) return nombre;
+        //Devuelve la ruta jerarquica 
+        return padre.obtenerRutaCompleta() + " › " + nombre;
+    }
+
+    // Comparacion por ruta completa y de la pertenecia de una tarea al nodo
     public boolean contiene(Tarea tarea) {
-        return tarea.getCategoria() != null && tarea.getCategoria().equalsIgnoreCase(nombre);
+        return tarea.getCategoria() != null && 
+               tarea.getCategoria().equalsIgnoreCase(this.obtenerRutaCompleta());
     }
 
     @Override

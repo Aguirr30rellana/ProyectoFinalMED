@@ -9,7 +9,6 @@ import modelo.entidades.Tarea;
 import modelo.servicios.ArbolCategorias;
 import modelo.servicios.GestorTareas;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -25,13 +24,6 @@ public class ControladorCategorias {
     public ControladorCategorias(ArbolCategorias arbol, GestorTareas gestor) {
         this.arbol = arbol;
         this.gestor = gestor;
-    }
-
-    // Pendientes + completadas
-    private List<Tarea> todasLasTareas() {
-        List<Tarea> todas = new ArrayList<>(gestor.getPendientes());
-        todas.addAll(gestor.getCompletadas());
-        return todas;
     }
 
     public NodoCategoria getRaiz() { return arbol.getRaiz(); }
@@ -60,22 +52,28 @@ public class ControladorCategorias {
         return encontrada;
     }
 
-    public Tarea crearTareaEnCategoria(NodoCategoria categoria, String nombre, String descripcion,
-                                        int prioridad, String fecha)
+    public Tarea crearTareaEnCategoria(NodoCategoria categoria, String nombre, String descripcion, int prioridad, String fecha)
             throws CategoriaException, FechaInvalidaException, PrioridadInvalidaException, CampoVacioException {
         if (categoria == null) {
             throw new CategoriaException("Seleccione la categoria de la tarea.");
         }
-        return gestor.crearTarea(nombre, descripcion, prioridad, fecha, categoria.getNombre());
+        
+       // Se usa la ruta completa para evitar ambigüedades 
+        Tarea nuevaTarea = gestor.crearTarea(nombre, descripcion, prioridad, fecha, categoria.obtenerRutaCompleta());
+        
+        // Agrega la referencia exacta de la tarea en el árbol
+        categoria.agregarTarea(nuevaTarea);
+        
+        return nuevaTarea;
     }
 
-    //  Consultas (delegan en los metodos recursivos del arbol)
-
-    public String recorridoConSangria()               { return arbol.mostrarConSangria(todasLasTareas()); }
-    public int contarTareas(NodoCategoria nodo)        { return arbol.contarTareas(nodo, todasLasTareas()); }
-    public List<Tarea> tareasDeRama(NodoCategoria n)   { return arbol.obtenerTareasDeRama(n, todasLasTareas()); }
+    public String recorridoConSangria()               { return arbol.mostrarConSangria(); }
+    public int contarTareas(NodoCategoria nodo)        { return arbol.contarTareas(nodo); }
+    public List<Tarea> tareasDeRama(NodoCategoria n)   { return arbol.obtenerTareasDeRama(n); }
     public String ruta(NodoCategoria nodo)             { return arbol.obtenerRuta(nodo); }
     public int totalCategorias()                       { return arbol.contarCategorias(arbol.getRaiz()) - 1; } 
     public int niveles()                               { return arbol.altura(arbol.getRaiz()); }
-    public int totalTareas()                           { return todasLasTareas().size(); }
+    
+    // Calcula el total de tareas consultando directamente desde la raíz del árbol
+    public int totalTareas()                           { return arbol.contarTareas(arbol.getRaiz()); }
 }
