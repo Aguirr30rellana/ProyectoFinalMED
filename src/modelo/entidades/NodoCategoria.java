@@ -34,7 +34,7 @@ public class NodoCategoria {
         this.padre = padre;
     }
 
-
+    //getters
     public String getNombre() { return nombre; }
     public NodoCategoria getPadre() { return padre; }
     public List<NodoCategoria> getHijos() { return hijos; }
