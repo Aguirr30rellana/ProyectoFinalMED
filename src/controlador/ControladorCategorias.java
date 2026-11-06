@@ -36,7 +36,10 @@ public class ControladorCategorias {
         arbol.eliminarCategoria(nodo);
     }
 
-    public NodoCategoria buscar(String nombre) throws CategoriaException {
+    public NodoCategoria buscar(String nombre) throws CategoriaException, CampoVacioException {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new CampoVacioException("Categoria a buscar");
+        }
         NodoCategoria encontrada = arbol.buscar(nombre);
         if (encontrada == null) {
             throw new CategoriaException("No se encontro la categoria \"" + nombre + "\".");

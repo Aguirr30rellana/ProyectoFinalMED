@@ -24,7 +24,7 @@ public class Main {
             cargarDatosDeEjemplo(gestor, arbol);
 
             // Controladores que usa la ventana
-            ControladorCategorias ctrlCategorias = new ControladorCategorias(arbol, gestor);
+            ControladorCategorias ctrlCategorias = new ControladorCategorias(arbol);
             ControladorTareas ctrlTareas = new ControladorTareas(arbol, gestor, new PilaHistorial(), new ColaEspera());
             cargarColaDeEjemplo(ctrlTareas);
 

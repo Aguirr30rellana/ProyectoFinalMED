@@ -39,12 +39,12 @@ public class ArbolCategorias {
                 throw new CategoriaException("Seleccione primero la categoria padre.");
             }
             if (nombre == null || nombre.trim().isEmpty()) {
-                throw new CampoVacioException("nombre de categoria");
+                throw new CampoVacioException("nombre de categoria vacio");
             }
             nombre = nombre.trim();
 
-            if (buscar(nombre) != null) {
-                throw new CategoriaException("Ya existe una categoria llamada \"" + nombre + "\".");
+            if (buscarHijoDirecto(padre, nombre) != null) {
+            throw new CategoriaException("Ya existe una subcategoria llamada \"" + nombre + "\" dentro de \"" + padre.getNombre() + "\".");
             }
 
             NodoCategoria nueva = new NodoCategoria(nombre, padre);

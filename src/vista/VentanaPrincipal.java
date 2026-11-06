@@ -196,8 +196,8 @@ public class VentanaPrincipal extends JFrame {
         centro.add(lblCola, BorderLayout.NORTH);
         centro.add(scroll, BorderLayout.CENTER);
 
-        BotonModerno btnRecibir = BotonModerno.secundario("+ Recibir");
-        BotonModerno btnAsignar = BotonModerno.primario("Asignar siguiente");
+        BotonModerno btnRecibir = BotonModerno.secundario("+ Crear tarea");
+        BotonModerno btnAsignar = BotonModerno.primario("Asignar categoria");
         btnRecibir.addActionListener(e -> recibirTarea());
         btnAsignar.addActionListener(e -> asignarSiguiente());
 

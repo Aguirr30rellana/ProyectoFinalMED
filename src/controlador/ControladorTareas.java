@@ -118,6 +118,7 @@ public class ControladorTareas {
             throw new TareaNoEncontradaException("Seleccione la tarea que desea reabrir.");
         }
         gestor.reabrirTarea(tarea.getId());
+        historial.registrarAccion(new Accion(Accion.TipoAccion.Reabrir, tarea));
     }
 
     // Deshacer (pila) 
@@ -148,9 +149,15 @@ public class ControladorTareas {
                 destino.agregarTarea(tarea);
                 return "Se restauro la tarea \"" + tarea.getNombre() + "\".";
 
-            default:                                        // Completar -> vuelve a pendiente
+            case Completar:
                 gestor.reabrirTarea(tarea.getId());
-                return "\"" + tarea.getNombre() + "\" volvio a estar pendiente.";
+                return "\"" + tarea.getNombre() + "\" volvió a estar pendiente.";
+
+            case Reabrir:
+                gestor.completarTarea(tarea.getId());
+                return "\"" + tarea.getNombre() + "\" volvió a estar completada.";
+            default:
+                return "";
         }
     }
 

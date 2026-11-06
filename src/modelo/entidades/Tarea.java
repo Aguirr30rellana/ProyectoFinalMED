@@ -93,12 +93,4 @@ public class Tarea {
         this.fechaLimite = fechaLimite;
     }
 
-    //cambio de string temporal para pruebas en consola---- BORRRAR DESPUES
-    @Override
-    public String toString() {
-        return "[" + id + "] " + nombre + " | Prioridad: " + prioridad
-                + " | Vence: " + fechaLimite
-                + " | Categoria: " + (categoria == null ? "-" : categoria)
-                + " | " + (completada ? "Completada" : "Pendiente");
-    }
 }

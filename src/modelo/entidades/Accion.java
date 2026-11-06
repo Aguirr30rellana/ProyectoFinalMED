@@ -2,7 +2,7 @@ package modelo.entidades;
 
 public class Accion {
 
-    public enum TipoAccion {Agregar,Eliminar,Completar}
+    public enum TipoAccion {Agregar,Eliminar,Completar, Reabrir}
 
     private TipoAccion tipo;
     private Tarea tarea;
