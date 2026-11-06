@@ -1,9 +1,12 @@
 package modelo.servicios;
 
 import java.util.Stack;
+import java.io.Serializable; 
 import modelo.entidades.Accion;
 
-public class PilaHistorial {
+public class PilaHistorial implements Serializable { 
+    private static final long serialVersionUID = 1L; 
+
     private Stack<Accion> historial;
 
     public PilaHistorial() {

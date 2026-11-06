@@ -2,10 +2,12 @@ package modelo.entidades;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable; 
 
 import excepciones.CampoVacioException;
 
-public class NodoCategoria {
+public class NodoCategoria implements Serializable { 
+    private static final long serialVersionUID = 1L; 
 
     //atributos
     private String nombre; 

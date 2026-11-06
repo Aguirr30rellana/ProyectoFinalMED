@@ -1,6 +1,8 @@
 package modelo.entidades;
+import java.io.Serializable; 
 
-public class Accion {
+public class Accion implements Serializable { 
+    private static final long serialVersionUID = 1L; 
 
     public enum TipoAccion {Agregar,Eliminar,Completar, Reabrir}
 

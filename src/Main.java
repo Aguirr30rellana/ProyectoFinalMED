@@ -7,6 +7,7 @@ import modelo.servicios.ArbolCategorias;
 import modelo.servicios.ColaEspera;
 import modelo.servicios.GestorTareas;
 import modelo.servicios.PilaHistorial;
+import utils.GestorArchivos;
 import vista.VentanaPrincipal;
 import vista.estilos.Tema;
 
@@ -15,23 +16,37 @@ import java.time.LocalDate;
 
 public class Main {
 
+    // Variables globales para guardar los datos
+    public static GestorTareas gestorGlobal;
+    public static ArbolCategorias arbolGlobal;
+
     public static void main(String[] args) {
         try {
-            // Datos compartidos por toda la aplicacion
-            GestorTareas gestor = new GestorTareas();
-            ArbolCategorias arbol = new ArbolCategorias("Categorias");
+            // 1. Intentar cargar los datos guardados
+            Object[] datosCargados = GestorArchivos.cargarDatos();
+
+            if (datosCargados != null) {
+                gestorGlobal = (GestorTareas) datosCargados[0];
+                arbolGlobal = (ArbolCategorias) datosCargados[1];
+            } else {
+                // Primera vez: iniciar de cero
+                gestorGlobal = new GestorTareas();
+                arbolGlobal = new ArbolCategorias("Categorias");
+                cargarDatosDeEjemplo(gestorGlobal, arbolGlobal);
+            }
+
+            // Controladores
+            ControladorCategorias ctrlCategorias = new ControladorCategorias(arbolGlobal);
+            ControladorTareas ctrlTareas = new ControladorTareas(arbolGlobal, gestorGlobal, new PilaHistorial(), new ColaEspera());
             
-            cargarDatosDeEjemplo(gestor, arbol);
+            if (datosCargados == null) {
+                cargarColaDeEjemplo(ctrlTareas); // Solo si es la primera vez
+            }
 
-            // Controladores que usa la ventana
-            ControladorCategorias ctrlCategorias = new ControladorCategorias(arbol);
-            ControladorTareas ctrlTareas = new ControladorTareas(arbol, gestor, new PilaHistorial(), new ColaEspera());
-            cargarColaDeEjemplo(ctrlTareas);
-
-            // Swing se crea en el hilo de eventos (EDT)
+            // Abrir la ventana PASÁNDOLE LOS DATOS (esto arregla el error)
             SwingUtilities.invokeLater(() -> {
                 Tema.aplicar();
-                new VentanaPrincipal(ctrlCategorias, ctrlTareas).setVisible(true);
+                new VentanaPrincipal(ctrlCategorias, ctrlTareas, gestorGlobal, arbolGlobal).setVisible(true);
             });
             
         } catch (CampoVacioException e) {
@@ -39,7 +54,6 @@ public class Main {
         }
     }
 
-    // Datos de prueba
     private static void cargarDatosDeEjemplo(GestorTareas gestor, ArbolCategorias arbol) {
         try {
             NodoCategoria n1 = arbol.agregarPorRuta("Trabajo", "Proyecto A", "Documentacion");
@@ -64,7 +78,6 @@ public class Main {
         }
     }
 
-    // Tareas recibidas sin categoria, esperando en la cola
     private static void cargarColaDeEjemplo(ControladorTareas ctrlTareas) {
         try {
             ctrlTareas.recibirTarea("Revisar correo del cliente", "Pedido urgente", 2, enDias(2));

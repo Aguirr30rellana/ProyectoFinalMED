@@ -6,10 +6,10 @@ import excepciones.PrioridadInvalidaException;
 import utils.ConvertorFecha;
 
 import java.time.LocalDate;
+import java.io.Serializable; 
 
-
-public class TareaEnEspera {
-
+public class TareaEnEspera implements Serializable { 
+    private static final long serialVersionUID = 1L; 
     private final String nombre;
     private final String descripcion;
     private final int prioridad;

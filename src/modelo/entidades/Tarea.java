@@ -4,9 +4,11 @@ import excepciones.CampoVacioException;
 import excepciones.FechaInvalidaException;
 import excepciones.PrioridadInvalidaException;
 import java.time.LocalDate;
+import java.io.Serializable; 
 
-
-public class Tarea {
+public class Tarea implements Serializable { 
+    private static final long serialVersionUID = 1L; 
+    
     public static final int PRIORIDAD_MIN = 1;
     public static final int PRIORIDAD_MAX = 5;
     

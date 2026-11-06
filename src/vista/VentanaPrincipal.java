@@ -15,6 +15,8 @@ import excepciones.TareaNoEncontradaException;
 import modelo.entidades.NodoCategoria;
 import modelo.entidades.Tarea;
 import modelo.entidades.TareaEnEspera;
+import modelo.servicios.ArbolCategorias;
+import modelo.servicios.GestorTareas;
 import vista.estilos.BotonModerno;
 import vista.estilos.Tema;
 
@@ -37,6 +39,10 @@ public class VentanaPrincipal extends JFrame {
 
     private final ControladorCategorias ctrlCategorias;
     private final ControladorTareas ctrlTareas;
+    
+    // NUEVAS VARIABLES: Para poder guardar los datos al cerrar
+    private final GestorTareas gestorAGuardar;
+    private final ArbolCategorias arbolAGuardar;
 
     // Arbol
     private final JTree jTree = new JTree();
@@ -65,10 +71,14 @@ public class VentanaPrincipal extends JFrame {
     private final BotonModerno btnCompletar = BotonModerno.secundario("Completar");
     private final BotonModerno btnDeshacer = BotonModerno.secundario("Deshacer");
 
-    public VentanaPrincipal(ControladorCategorias ctrlCategorias, ControladorTareas ctrlTareas) {
+    // CONSTRUCTOR MODIFICADO: Ahora recibe el gestor y el arbol
+    public VentanaPrincipal(ControladorCategorias ctrlCategorias, ControladorTareas ctrlTareas, 
+                            GestorTareas gestor, ArbolCategorias arbol) {
         super("Gestor de Tareas");
         this.ctrlCategorias = ctrlCategorias;
         this.ctrlTareas = ctrlTareas;
+        this.gestorAGuardar = gestor;
+        this.arbolAGuardar = arbol;
 
         JPanel cuerpo = new JPanel(new BorderLayout());
         cuerpo.setBackground(Tema.FONDO);
@@ -718,10 +728,14 @@ public class VentanaPrincipal extends JFrame {
         return combo;
     }
 
+    // MÉTODO MODIFICADO: Ahora guarda los datos usando las variables de la clase
     private void salir() {
         int r = JOptionPane.showConfirmDialog(this, "¿Desea salir de la aplicación?",
                 "Salir", JOptionPane.YES_NO_OPTION);
-        if (r == JOptionPane.YES_OPTION) System.exit(0);
+        if (r == JOptionPane.YES_OPTION) {
+            utils.GestorArchivos.guardarDatos(gestorAGuardar, arbolAGuardar);
+            System.exit(0);
+        }
     }
 
     private JLabel etiqueta(String texto) {

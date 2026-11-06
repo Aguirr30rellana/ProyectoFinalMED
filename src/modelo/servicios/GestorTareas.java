@@ -10,10 +10,10 @@ import utils.ConvertorFecha;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable; 
 
-
-
-public class GestorTareas {
+public class GestorTareas implements Serializable { 
+    private static final long serialVersionUID = 1L; 
 
     private final ArrayList<Tarea> tareas_pendientes = new ArrayList<>();
     private final ArrayList<Tarea> tareas_completadas = new ArrayList<>();

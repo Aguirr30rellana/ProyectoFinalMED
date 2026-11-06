@@ -7,6 +7,7 @@ import modelo.entidades.Tarea;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable; 
 
 /*
  * Arbol general (jerarquico) de categorias y subcategorias.
@@ -17,7 +18,8 @@ import java.util.List;
  *   3. Caso base: un nodo hoja (sin hijos) -> el for no se ejecuta y la llamada termina.
  */
 
-public class ArbolCategorias {
+public class ArbolCategorias implements Serializable { 
+    private static final long serialVersionUID = 1L; 
 
     private final NodoCategoria raiz;
 

@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.io.Serializable; 
 import modelo.entidades.TareaEnEspera;
 
 //la primera tarea que se recibe es la primera que se asigna
-public class ColaEspera {
+public class ColaEspera implements Serializable { 
+    private static final long serialVersionUID = 1L; 
+
     private Queue<TareaEnEspera> cola;
 
     public ColaEspera() {
