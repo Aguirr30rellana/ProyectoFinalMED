@@ -2,28 +2,19 @@ package controlador;
 
 import excepciones.CampoVacioException;
 import excepciones.CategoriaException;
-import excepciones.FechaInvalidaException;
-import excepciones.PrioridadInvalidaException;
 import modelo.entidades.NodoCategoria;
 import modelo.entidades.Tarea;
 import modelo.servicios.ArbolCategorias;
-import modelo.servicios.GestorTareas;
 
 import java.util.List;
 
-/*
- * Une el arbol de categorias con el GestorTareas.
- * La vista solo habla con este controlador; las excepciones suben
- * hasta la vista para mostrarlas en un mensaje.
- */
+
 public class ControladorCategorias {
 
     private final ArbolCategorias arbol;
-    private final GestorTareas gestor;
 
-    public ControladorCategorias(ArbolCategorias arbol, GestorTareas gestor) {
+    public ControladorCategorias(ArbolCategorias arbol) {
         this.arbol = arbol;
-        this.gestor = gestor;
     }
 
     public NodoCategoria getRaiz() { return arbol.getRaiz(); }
@@ -33,6 +24,7 @@ public class ControladorCategorias {
         return arbol.agregarCategoria(padre, nombre);
     }
 
+    // No se permite eliminar una rama que todavia tiene tareas
     public void eliminarCategoria(NodoCategoria nodo) throws CategoriaException {
         if (nodo != null && !nodo.esRaiz()) {
             int cantidad = contarTareas(nodo);
@@ -52,12 +44,11 @@ public class ControladorCategorias {
         return encontrada;
     }
 
-
     public int contarTareas(NodoCategoria nodo)        { return arbol.contarTareas(nodo); }
     public List<Tarea> tareasDeRama(NodoCategoria n)   { return arbol.obtenerTareasDeRama(n); }
     public String ruta(NodoCategoria nodo)             { return arbol.obtenerRuta(nodo); }
-    public int totalCategorias()                       { return arbol.contarCategorias(arbol.getRaiz()) - 1; } 
-    
-    // Calcula el total de tareas consultando directamente desde la raíz del árbol
+    public int totalCategorias()                       { return arbol.contarCategorias(arbol.getRaiz()) - 1; }
+
+    // Calcula el total de tareas consultando directamente desde la raiz del arbol
     public int totalTareas()                           { return arbol.contarTareas(arbol.getRaiz()); }
 }
