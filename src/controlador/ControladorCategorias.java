@@ -52,27 +52,11 @@ public class ControladorCategorias {
         return encontrada;
     }
 
-    public Tarea crearTareaEnCategoria(NodoCategoria categoria, String nombre, String descripcion, int prioridad, String fecha)
-            throws CategoriaException, FechaInvalidaException, PrioridadInvalidaException, CampoVacioException {
-        if (categoria == null) {
-            throw new CategoriaException("Seleccione la categoria de la tarea.");
-        }
-        
-       // Se usa la ruta completa para evitar ambigüedades 
-        Tarea nuevaTarea = gestor.crearTarea(nombre, descripcion, prioridad, fecha, categoria.obtenerRutaCompleta());
-        
-        // Agrega la referencia exacta de la tarea en el árbol
-        categoria.agregarTarea(nuevaTarea);
-        
-        return nuevaTarea;
-    }
 
-    public String recorridoConSangria()               { return arbol.mostrarConSangria(); }
     public int contarTareas(NodoCategoria nodo)        { return arbol.contarTareas(nodo); }
     public List<Tarea> tareasDeRama(NodoCategoria n)   { return arbol.obtenerTareasDeRama(n); }
     public String ruta(NodoCategoria nodo)             { return arbol.obtenerRuta(nodo); }
     public int totalCategorias()                       { return arbol.contarCategorias(arbol.getRaiz()) - 1; } 
-    public int niveles()                               { return arbol.altura(arbol.getRaiz()); }
     
     // Calcula el total de tareas consultando directamente desde la raíz del árbol
     public int totalTareas()                           { return arbol.contarTareas(arbol.getRaiz()); }

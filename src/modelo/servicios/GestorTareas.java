@@ -6,7 +6,7 @@ import excepciones.PrioridadInvalidaException;
 import excepciones.TareaNoEncontradaException;
 import modelo.entidades.Tarea;
 import utils.ConvertorFecha;
- 
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -200,6 +200,16 @@ public class GestorTareas {
             if (!huboIntercambio) {
                 break;
             }
+        }
+    }
+
+        //Vuelve a agregar una tarea eliminada a su listado
+    public void restaurarTarea(Tarea tarea) {
+        if (tarea == null) return;
+        if (tarea.isCompletada()) {
+            tareas_completadas.add(tarea);
+        } else {
+            tareas_pendientes.add(tarea);
         }
     }
 

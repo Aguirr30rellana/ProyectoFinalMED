@@ -1,9 +1,13 @@
+import controlador.ControladorCategorias;
+import controlador.ControladorTareas;
 import excepciones.CampoVacioException;
 import modelo.entidades.NodoCategoria;
 import modelo.entidades.Tarea;
 import modelo.servicios.ArbolCategorias;
+import modelo.servicios.ColaEspera;
 import modelo.servicios.GestorTareas;
-import vista.MenuPrincipal;
+import modelo.servicios.PilaHistorial;
+import vista.VentanaPrincipal;
 import vista.estilos.Tema;
 
 import javax.swing.*;
@@ -19,10 +23,15 @@ public class Main {
             
             cargarDatosDeEjemplo(gestor, arbol);
 
+            // Controladores que usa la ventana
+            ControladorCategorias ctrlCategorias = new ControladorCategorias(arbol, gestor);
+            ControladorTareas ctrlTareas = new ControladorTareas(arbol, gestor, new PilaHistorial(), new ColaEspera());
+            cargarColaDeEjemplo(ctrlTareas);
+
             // Swing se crea en el hilo de eventos (EDT)
             SwingUtilities.invokeLater(() -> {
                 Tema.aplicar();
-                new MenuPrincipal(gestor, arbol).setVisible(true);
+                new VentanaPrincipal(ctrlCategorias, ctrlTareas).setVisible(true);
             });
             
         } catch (CampoVacioException e) {
@@ -30,10 +39,7 @@ public class Main {
         }
     }
 
-
-
-    
-    // Datos de prueba (borrar o cambiar cuando ya no se necesiten)
+    // Datos de prueba
     private static void cargarDatosDeEjemplo(GestorTareas gestor, ArbolCategorias arbol) {
         try {
             NodoCategoria n1 = arbol.agregarPorRuta("Trabajo", "Proyecto A", "Documentacion");
@@ -57,6 +63,17 @@ public class Main {
             System.err.println("Error cargando datos de ejemplo: " + e.getMessage());
         }
     }
+
+    // Tareas recibidas sin categoria, esperando en la cola
+    private static void cargarColaDeEjemplo(ControladorTareas ctrlTareas) {
+        try {
+            ctrlTareas.recibirTarea("Revisar correo del cliente", "Pedido urgente", 2, enDias(2));
+            ctrlTareas.recibirTarea("Preparar presentacion", "", 3, enDias(6));
+        } catch (Exception e) {
+            System.err.println("Error cargando la cola de ejemplo: " + e.getMessage());
+        }
+    }
+
     private static String enDias(int dias) {
         return LocalDate.now().plusDays(dias).toString();
     }

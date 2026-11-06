@@ -1,24 +1,34 @@
 package modelo.servicios;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
-import modelo.entidades.Tarea;
+import modelo.entidades.TareaEnEspera;
 
+//la primera tarea que se recibe es la primera que se asigna
 public class ColaEspera {
-    private Queue<Tarea> cola;
+    private Queue<TareaEnEspera> cola;
 
     public ColaEspera() {
         this.cola = new LinkedList<>();
     }
 
-    public void encolar(Tarea tarea) {
+    // Entra al final de la cola
+    public void encolar(TareaEnEspera tarea) {
         if (tarea != null) {
             cola.add(tarea);
         }
     }
 
-    public Tarea atenderSiguiente() {
+    // Sale la del frente (la mas antigua)
+    public TareaEnEspera atenderSiguiente() {
         return cola.poll();
+    }
+
+    // Consulta la del frente sin sacarla
+    public TareaEnEspera verSiguiente() {
+        return cola.peek();
     }
 
     public boolean estaVacia() {
@@ -27,5 +37,10 @@ public class ColaEspera {
 
     public int obtenerCantidad() {
         return cola.size();
+    }
+
+    // Copia en orden de llegada, solo para mostrarla (no modifica la cola)
+    public List<TareaEnEspera> obtenerTodas() {
+        return new ArrayList<>(cola);
     }
 }
